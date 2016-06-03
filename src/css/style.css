@@ -1,0 +1,21 @@
+*{
+    box-sizing: border-box;
+}
+
+.left{
+    float: left;
+}
+
+.right{
+    float: right;
+}
+
+.row{
+    clear: both;
+}
+/* header */
+
+.header{
+
+
+}

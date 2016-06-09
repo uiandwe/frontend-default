@@ -7,8 +7,9 @@ var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 var babel = require('gulp-babel');
+var sass = require('gulp-sass');
 
-gulp.task('server', ['babel', 'minifycss', 'html'], function () {
+gulp.task('server', ['babel', 'minifycss', 'html', 'compile-sass'], function () {
     return browserSync.init({
         server: {
             baseDir: './dist'
@@ -17,35 +18,42 @@ gulp.task('server', ['babel', 'minifycss', 'html'], function () {
 });
 
 gulp.task('html', function () {
-    return gulp.src('*.html') 
-        .pipe(gulp.dest('dist')) 
-        .pipe(browserSync.reload({stream:true})); 
+    return gulp.src('*.html')
+        .pipe(gulp.dest('dist'))
+        .pipe(browserSync.reload({stream:true}));
 });
 
 
 gulp.task('minifycss', function() {
-  return gulp.src('src/css/*.css')
-    .pipe(concat('index.css'))
-    .pipe(minifyCss({compatibility: 'ie8'}))
-    .pipe(gulp.dest('dist/css/'))
-    .pipe(browserSync.reload({stream:true}));
+    return gulp.src('src/css/*.css')
+        .pipe(concat('index.css'))
+        .pipe(minifyCss({compatibility: 'ie8'}))
+        .pipe(gulp.dest('dist/css/'))
+        .pipe(browserSync.reload({stream:true}));
+});
+
+gulp.task('compile-sass', function () {
+    return gulp.src('src/css/*.scss')
+        .pipe(sass())
+        .pipe(gulp.dest('dist/css'))
+        .pipe(browserSync.reload({stream:true}));
 });
 
 
-
 gulp.task('babel', function() {
-  return gulp.src('src/js/*.js')
-    .pipe(babel())
-    .pipe(gulp.dest('dist/js/'))
-    .pipe(browserSync.reload({stream:true}));
-}); 
+    return gulp.src('src/js/*.js')
+        .pipe(babel())
+        .pipe(gulp.dest('dist/js/'))
+        .pipe(browserSync.reload({stream:true}));
+});
 
 
 gulp.task('watch', function(){
-   gulp.watch('src/js/*.js', ['babel']) ;
+    gulp.watch('src/js/*.js', ['babel']) ;
     gulp.watch('src/css/*.css',['minifycss']);
     gulp.watch('*.html',['html']);
-    
+    gulp.watch('src/css/*.scss',['compile-sass']);
+
 });
 
 
